@@ -1,10 +1,35 @@
+import { motion, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 import Icons from "./Icons";
 
 export default function Card() {
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const glareRef = React.useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const glareX = useMotionValue(0);
+  const glareY = useMotionValue(0);
   return (
-    <div className="w-full max-w-[356px] aspect-card rounded-4xl relative overflow-hidden">
+    <div
+      className="w-full max-w-[356px] aspect-card rounded-4xl relative overflow-hidden"
+      onMouseMove={(e) => {
+        if (!cardRef.current || !glareRef.current) return;
+        const cardRect = cardRef.current.getBoundingClientRect();
+        const glareRect = glareRef.current.getBoundingClientRect();
+        x.set(e.clientX - cardRect.left);
+        y.set(e.clientY - cardRect.top);
+        glareX.set(e.clientX - cardRect.left - glareRect.width / 2);
+        glareY.set(e.clientY - cardRect.top - glareRect.height / 2);
+      }}
+      ref={cardRef}
+    >
+      <motion.div
+        className="bg-gradient-radial from-white from-20% to-white/0 to-70% opacity-25 absolute size-[600px]"
+        style={{ x: glareX, y: glareY }}
+        ref={glareRef}
+      ></motion.div>
       <div className="absolute inset-4 rounded-4xl bg-white flex flex-col">
         <div className="flex-1 border-8 rounded-4xl border-gray-300 bg-pattern bg-cover relative">
           <Image
@@ -13,6 +38,7 @@ export default function Card() {
             width={150}
             height={150}
             objectFit="cover"
+            loading="lazy"
             className="rounded-[48px] border-8 border-white -rotate-3 absolute left-[3%] top-[3%]"
           />
           <div className="bg-black shadow-[rgba(0,0,0,0.8)_1px_1px_15px] p-4 absolute bottom-0 inset-x-0 text-gray-500 text-xs rounded-2xl translate-y-1/2 flex space-x-3">
@@ -35,15 +61,9 @@ export default function Card() {
                 <span className="text-gray-400">2024</span>
               </div>
             </div>
-            <hr className="my-4" />
+            <hr className="my-2" />
             <div className="text-xs flex flex-wrap gap-2">
-              {[
-                "#react",
-                "#nextjs",
-                "#typescript",
-                "#tailwindcss",
-                "#frontenddev",
-              ].map((tag) => (
+              {["#js", "#ts", "#react", "#nextjs", "#frontend"].map((tag) => (
                 <span
                   key={tag}
                   className="border border-black px-2 py-1 rounded-lg"
@@ -53,13 +73,13 @@ export default function Card() {
               ))}
             </div>
             <div>
-              <div className="w-[50%] absolute bottom-0 left-0 bg-red rounded-tr-4xl p-3 flex justify-between">
+              <div className="w-[50%] absolute bottom-0 left-0 bg-red rounded-tr-4xl p-4 flex justify-between">
                 <Icons name="react" className="h-[18px] w-[18px]" />
                 <Icons name="next" className="h-[18px] w-[18px]" />
                 <Icons name="typescript" className="h-[18px] w-[18px]" />
                 <Icons name="tailwind" className="h-[18px] w-[18px]" />
               </div>
-              <div className="w-[50%] absolute bottom-0 right-0 bg-black text-white rounded-tl-4xl p-3 flex justify-between">
+              <div className="w-[50%] absolute bottom-0 right-0 bg-black text-white rounded-tl-4xl p-4 flex justify-between">
                 <Link
                   tabIndex={0}
                   aria-label="take a look at my linkedin profile"
