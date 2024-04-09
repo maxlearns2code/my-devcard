@@ -1,4 +1,4 @@
-import { motion, useMotionValue } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -11,8 +11,12 @@ export default function Card() {
   const y = useMotionValue(0);
   const glareX = useMotionValue(0);
   const glareY = useMotionValue(0);
+  const rotateX = useTransform(y, [0, 504], [-15, 15]);
+  const rotateY = useTransform(x, [0, 356], [15, -15]);
+  const rotateXSpring = useSpring(rotateX);
+  const rotateYSpring = useSpring(rotateY);
   return (
-    <div
+    <motion.div
       className="w-full max-w-[356px] aspect-card rounded-4xl relative overflow-hidden"
       onMouseMove={(e) => {
         if (!cardRef.current || !glareRef.current) return;
@@ -23,7 +27,16 @@ export default function Card() {
         glareX.set(e.clientX - cardRect.left - glareRect.width / 2);
         glareY.set(e.clientY - cardRect.top - glareRect.height / 2);
       }}
+      onMouseLeave={() => {
+        if (!cardRef.current || !glareRef.current) return;
+        const cardRect = cardRef.current.getBoundingClientRect();
+        x.set(cardRect.width / 2);
+        y.set(cardRect.height / 2);
+        glareX.set(-1000);
+        glareY.set(-1000);
+      }}
       ref={cardRef}
+      style={{ rotateY: rotateYSpring, rotateX: rotateXSpring }}
     >
       <motion.div
         className="bg-gradient-radial from-white from-20% to-white/0 to-70% opacity-25 absolute size-[600px]"
@@ -31,7 +44,7 @@ export default function Card() {
         ref={glareRef}
       ></motion.div>
       <div className="absolute inset-4 rounded-4xl bg-white flex flex-col">
-        <div className="flex-1 border-8 rounded-4xl border-gray-300 bg-pattern bg-cover relative">
+        <div className="flex-1 border-8 rounded-4xl border-gray-300 bg-[url(/assets/background.webp)] bg-cover relative">
           <Image
             src="/assets/portrait.jpg"
             alt="profile picture"
@@ -41,14 +54,14 @@ export default function Card() {
             loading="lazy"
             className="rounded-[48px] border-8 border-white -rotate-3 absolute left-[3%] top-[3%]"
           />
-          <div className="bg-black shadow-[rgba(0,0,0,0.8)_1px_1px_15px] p-4 absolute bottom-0 inset-x-0 text-gray-500 text-xs rounded-2xl translate-y-1/2 flex space-x-3">
-            <span className="space-x-1 flex items-center">
-              <b className="text-white text-lg">10</b>
-              <span className="line-clamp-1">Reputation</span>
+          <div className="bg-gray-900 shadow-[rgba(0,0,0,0.8)_1px_1px_15px] p-4 absolute bottom-0 inset-x-0 text-gray-500 text-xs rounded-2xl translate-y-1/2 flex space-x-4">
+            <span className="space-x-2 flex items-center">
+              <b className="text-white text-lg">12</b>
+              <span className="line-clamp-1">Projects</span>
             </span>
-            <span className="space-x-1 flex items-center">
-              <b className="text-white text-lg">103</b>
-              <span className="line-clamp-1">Posts read</span>
+            <span className="space-x-2 flex items-center">
+              <b className="text-white text-lg">250</b>
+              <span className="line-clamp-1">Contributions</span>
             </span>
           </div>
         </div>
@@ -63,14 +76,16 @@ export default function Card() {
             </div>
             <hr className="my-2" />
             <div className="text-xs flex flex-wrap gap-2">
-              {["#js", "#ts", "#react", "#nextjs", "#frontend"].map((tag) => (
-                <span
-                  key={tag}
-                  className="border border-black px-2 py-1 rounded-lg"
-                >
-                  {tag}
-                </span>
-              ))}
+              {["#javascript", "#ts", "#react", "#nextjs", "#webdev"].map(
+                (tag) => (
+                  <span
+                    key={tag}
+                    className="border border-black px-2 py-1 rounded-lg"
+                  >
+                    {tag}
+                  </span>
+                )
+              )}
             </div>
             <div>
               <div className="w-[50%] absolute bottom-0 left-0 bg-red rounded-tr-4xl p-4 flex justify-between">
@@ -79,7 +94,7 @@ export default function Card() {
                 <Icons name="typescript" className="h-[18px] w-[18px]" />
                 <Icons name="tailwind" className="h-[18px] w-[18px]" />
               </div>
-              <div className="w-[50%] absolute bottom-0 right-0 bg-black text-white rounded-tl-4xl p-4 flex justify-between">
+              <div className="w-[50%] absolute bottom-0 right-0 bg-gray-900 text-white rounded-tl-4xl p-4 flex justify-between">
                 <Link
                   tabIndex={0}
                   aria-label="take a look at my linkedin profile"
@@ -112,11 +127,6 @@ export default function Card() {
           </div>
         </div>
       </div>
-      <style jsx>{`
-        .bg-pattern {
-          background-image: url(/assets/background.webp);
-        }
-      `}</style>
-    </div>
+    </motion.div>
   );
 }
