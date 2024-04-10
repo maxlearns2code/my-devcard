@@ -1,0 +1,29 @@
+{
+  "description": "Let's build something amazing together!",
+  "name": "Max Dewynter",
+  "role": "Front-End Developer",
+  "location": "Stockholm, Sweden",
+  "about": "I'm a frontend developer based in Stockholm, Sweden. I have a passion for building beautiful and functional websites. I have experience with JavaScript, TypeScript, React, and Next.js. I'm always looking to learn new things and improve my skills. Let's build something amazing together!",
+  "tags": [
+    {
+      "id": 1,
+      "tag": "#javascript"
+    },
+    {
+      "id": 2,
+      "tag": "#typescript"
+    },
+    {
+      "id": 3,
+      "tag": "#react/nextjs"
+    },
+    {
+      "id": 4,
+      "tag": "#tailwindcss"
+    },
+    {
+      "id": 5,
+      "tag": "#webdev"
+    }
+  ]
+}
